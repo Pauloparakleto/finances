@@ -16,8 +16,9 @@ RSpec.describe "/payments", type: :request do
   
   # Payment. As you add validations to Payment, be sure to
   # adjust the attributes here as well.
+  let(:user){ FactoryBot.create(:user, email: 'diego@example.com') }
   let(:valid_attributes) {
-    skip("Add a hash of attributes valid for your model")
+    FactoryBot.attributes_for(:payment).merge!(user_id: user.id)
   }
 
   let(:invalid_attributes) {
@@ -25,6 +26,23 @@ RSpec.describe "/payments", type: :request do
   }
 
   describe "GET /index" do
+    before { sign_in user }
+
+    context "when Payment is present" do
+      it "renders a successful response" do
+        Payment.create! valid_attributes
+        get payments_url
+        expect(response).to be_successful
+      end
+    end
+
+    context "when Payment is empty" do
+      it "renders a successful response" do
+        get payments_url
+        expect(response).to be_successful
+      end
+    end
+
     it "renders a successful response" do
       Payment.create! valid_attributes
       get payments_url
