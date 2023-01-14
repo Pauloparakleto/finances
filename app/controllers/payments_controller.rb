@@ -74,6 +74,8 @@ class PaymentsController < ApplicationController
   end
 
   def pagy_calendar_period(collection)
+    return [Date.today.to_time, Date.today.to_time] if collection.empty?
+
     to_time = collection.minmax.map(&:date)
     to_time.map { |time| time.to_time }
   end
